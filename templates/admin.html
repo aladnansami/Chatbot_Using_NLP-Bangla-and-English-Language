@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!--Fontawesome CSS-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!--Custom CSS-->
+  <link rel= "stylesheet" type= "text/css" href="{{ url_for('static',filename='common.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static',filename='index.css') }}">
+
+  <title>Admin Panel</title>
+</head>
+<body>
+
+  <!-- =================== HEADER =================== -->
+  <header class=" my-3">
+    <div class="header-box">
+      <a href=""><img src="{{ url_for('static',filename='./images/nstu_logo.png') }}" alt=""></a>
+      <div class="header-title">
+        <h3>নোয়াখালী বিজ্ঞান ও প্রযুক্তি বিশ্ববিদ্যালয়</h3>
+        <h3>Noakhali Science and Technology University</h3>
+        <small>নোয়াখালী ৩৮১৪, বাংলাদেশ।</small>
+      </div>
+      <div class="header-contact">
+        <i class="fa fa-phone"></i>
+        <b>Phone: 02334496522</b>
+        </br>
+        <i class="fa fa-envelope"></i>
+        <b> registrar@office.nstu.edu.bd</b>
+        </br>
+        <i class="fa fa-fax"></i>
+        <b>Fax: 02334496523</b>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================== NAVIGATION BAR =================== -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark ">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link text-white" href="/">Home</a>
+        </li>
+        <li class="nav-item hover-list-parent">
+          <a class="nav-link text-white" href="#">Academic</a>
+          <ul class="hover-list">
+            <li><a href="https://nstu.edu.bd/institutes.html">Institutes</a></li>
+            <li><a href="https://nstu.edu.bd/faculties.html">Faculties</a></li>
+            <li><a href="https://nstu.edu.bd/academic_calender.html">Academic Calender</a></li>
+            <li><a href="https://nstu.edu.bd/academic_programs.html">Academic Prgrams</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="https://www.admission.nstu.edu.bd/">GST Admission</a>
+        </li>
+        <li class="nav-item">
+          <a href="#exampleModal" data-toggle="modal"  class="nav-link text-white">Subject Comparision</a>
+        </li> 
+      </ul>
+    </div>
+
+    <!-- =================== DISPLAYING LOGOUT LINK BASED ON USER LOGGED IN OR NOT =================== -->
+    {% with m=session.get("admin_id")  %}
+      {% if m!=None %}
+        <a href="./admin_logout" class="nav-link text-white">Log Out</a>
+      {% endif %}
+    {% endwith %} 
+
+  </nav> 
+
+  <div class="container-fluid">
+    <h2 class="text-center py-2 my-0">Admin Panel</h2>
+    <div class="row py-3">
+      <div class="col-4" id="edit_feedback_box" style="display: none;">
+        <form action="/add_query" id="" class="border p-3" method="POST">
+          <input type="hidden" name="eidtable_feed_back_id">
+          <div class="form-group">
+            <label for="">Tag</label>
+            <input type="text" class="form-control" name="tag" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="">Patterns</label>
+            <input type="text" class="form-control" name="patterns" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="">Responses</label>
+            <input type="text" class="form-control" name="responses" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="">Context</label>
+            <input type="text" class="form-control" name="context" placeholder="">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="col-8 mx-auto">
+        <div class="table-responsive feed_back_container">
+          <table class="table">
+            <thead>
+                <th scope="col">User Text</th>
+                <th scope="col">Chatbot Response</th>
+                <th scope="col">Feedback</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in feedback_data %}
+              <tr>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[1] }}</td>
+                <td class="d-flex">
+                  <button type="submit" class="edit_btn"><i class="fa-solid fa-pen-to-square"></i></button>
+                  <form action="/delete_feedback" method="post">
+                    <input type="hidden" name="id" value="{{ item[0] }}">
+                    <button type="submit" class="delete_btn"><i class="fa-sharp fa-solid fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- =================== FOOTER =================== -->
+  <footer>
+    <p class="text-center bg-dark text-white m-0">All &copy copy right reserved | <a href="" class="text-white">Noakhali Science & Technology University</a></p>
+  </footer>
+  
+  <!-- =================== BOOTSTRAP JAVASCRIPT =================== -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>  
+  <script>
+    const edit_btn=document.querySelectorAll(".edit_btn");
+    edit_btn.forEach((item)=>{
+      item.addEventListener("click",(e)=>{
+        const target_element=e.target.parentElement.parentElement.parentElement;
+        const patterns = target_element.children[0].textContent
+        const responses = target_element.children[2].textContent
+        const feed_back_id = target_element.children[3].children[1].children[0].value
+        
+        const editable_patterns=document.getElementsByName("patterns")[0]
+        const editable_responses=document.getElementsByName("responses")[0]
+        const eidtable_feed_back_id=document.getElementsByName("eidtable_feed_back_id")[0]
+
+        edit_feedback_box.style.display='block'
+
+        editable_patterns.value=patterns
+        editable_responses.value=responses
+        eidtable_feed_back_id.value=feed_back_id 
+      })
+    })
+    
+  </script>
+</body>
+</html>

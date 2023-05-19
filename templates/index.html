@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!--Fontawesome CSS-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!--MUI CSS-->
+  <link href="//cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" type="text/css" />
+
+  <!--Custom CSS-->
+  <link rel="stylesheet" href="{{ url_for('static',filename='./common.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='./index.css') }}">
+
+  <title>Noakhali Science and Technology University</title>
+</head>
+<body>
+
+  <!-- =================== HEADER =================== -->
+  <header class=" my-3">
+    <div class="header-box">
+      <a href=""><img src="{{ url_for('static',filename='./images/nstu_logo.png') }}" alt=""></a>
+      <div class="header-title">
+        <h3>নোয়াখালী বিজ্ঞান ও প্রযুক্তি বিশ্ববিদ্যালয়</h3>
+        <h3>Noakhali Science and Technology University</h3>
+        <small>নোয়াখালী ৩৮১৪, বাংলাদেশ।</small>
+      </div>
+      <div class="header-contact">
+        <i class="fa fa-phone"></i>
+        <b>Phone: 02334496522</b>
+        </br>
+        <i class="fa fa-envelope"></i>
+        <b> registrar@office.nstu.edu.bd</b>
+        </br>
+        <i class="fa fa-fax"></i>
+        <b>Fax: 02334496523</b>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================== NAVIGATION BAR =================== -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark ">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link text-white" href="/">Home</a>
+        </li>
+        <li class="nav-item hover-list-parent">
+          <a class="nav-link text-white" href="#">Academic</a>
+          <ul class="hover-list">
+            <li><a href="https://nstu.edu.bd/institutes.html">Institutes</a></li>
+            <li><a href="https://nstu.edu.bd/faculties.html">Faculties</a></li>
+            <li><a href="https://nstu.edu.bd/academic_calender.html">Academic Calender</a></li>
+            <li><a href="https://nstu.edu.bd/academic_programs.html">Academic Prgrams</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="https://www.admission.nstu.edu.bd/">GST Admission</a>
+        </li>
+        <li class="nav-item">
+          <a href="#exampleModal" data-toggle="modal"  class="nav-link text-white">Subject Comparision</a>
+        </li> 
+      </ul>
+    </div>
+
+    <!-- =================== DISPLAYING ALERT MESSAGE BASED ON SUCCESSFUL REGISTRATION AND LOGIN =================== -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+       {% for message in messages %}
+           <div  class="alert alert-warning alert-dismissible fade show " role="alert">
+               <span> {{ message }}</span>
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+           </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- =================== DISPLAYING LOGOUT LINK BASED ON USER LOGGED IN OR NOT =================== -->
+    {% with m=session.get("user_id")  %}
+      {% if m!=None %}
+        <a href="./logout" class="nav-link text-white">Log Out</a>
+      {% endif %}
+    {% endwith %}
+
+  </nav>
+
+
+      <!-- =================== MODAL FOR COMPARE COURSES =================== -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 style="background-color: cornsilk;" class="modal-title" id="exampleModalLabel">Choose Courses for Comparing</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="container comp-container">
+                    <div class="box">
+                        <select id="inp1">
+                        <option value="BScIT">BSSE</option>
+                        <option value="BScCS">CSTE</option>
+                        <option value="ME">ICE</option>
+                        </select>
+                        <select id="inp2">
+                        <option value="BScIT">BSSE</option>
+                        <option value="BScCS">CSTE</option>
+                        <option value="ME">ICE</option>
+                        </select>
+                        <button  id="but_compare">Compare</button>
+                    </div>
+
+                    <!-- table -->
+                    <span style="font-size: 0.9rem;" id="table_span">
+                    </span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+  <!-- =================== HOME - TITLE & IMAGE BOX =================== -->
+  <div class="img-container">
+    <img src="{{ url_for('static',filename='./images/home.jpg') }}" alt="">
+    <div class="text-box">
+      <h1 class="text-uppercase d-flex justify-content-center" >Follow Your Dreams</h1>
+      <h1 class="d-flex justify-content-center">@ NSTU</h1>
+    </div>
+    <!-- =================== HOME - ICON BOX =================== -->
+    <div class="container-fluid-sm d-flex justify-content-center icon-box">
+      <div class="row w-75">
+        <div class="col-3 border bg-black text-center rounded py-3">
+          <i class=" fas fa-university fa-4x"></i>
+          <h1 class="text-white">10+</h1>
+          <h4 class="m-0 text-white">Buildings</h4>
+        </div>
+        <div class="col-3 border bg-black text-center rounded py-3">
+          <i class=" fa fa-user fa-4x"></i>
+          <h1 class="text-white">7000+</h1>
+          <h4 class="m-0 text-white">Student</h4>
+        </div>
+        <div class="col-3 border bg-black text-center rounded py-3">
+          <i class=" fa fa-male fa-4x"></i>
+          <h1 class="text-white">500+</h1>
+          <h4 class="m-0 text-white">Teachers</h4>
+        </div>
+        <div class="col-3 border bg-black text-center rounded py-3">
+          <i class=" fa fa-book fa-4x"></i>
+          <h1 class="text-white">30+</h1>
+          <h4 class="m-0 text-white">Departments</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== ABOUT SECTION =================== -->
+  <div class="container-fluid-sm my-5 about">
+    <div class="row" style="width: 90%;margin: auto;">
+      <div class="col-md-12 col-xl-7">
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <h2 class="text-uppercase">About NSTU</h2>
+            <p class="text-justify text-secondary">The creation of a band of skilled manpower equipped with latest knowledge of science and technology is a must to achieve a prestigious position in this modern world. As a part of ensuring quality education, with immense expectations of the southern coastal inhabitants of Bangladesh, a new university named Noakhali Science and Technology University (abbreviated as NSTU) was established on 15 July 2001...</p>
+            <button type="button" class="btn btn-dark">Read More</button>
+          </div>
+          <div class="col-12 col-md-6 video-container">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item mt-3 mt-md-0 video"  src="https://www.youtube.com/embed/pk-o2neqgrc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-xl-5">
+        <div class="row">
+          <div class="col-12 col-sm-5 vc-img-container text-center">
+            <img src="https://nstu.edu.bd/assets/images/administration/vice_chancellor.jpg" class="vc-image" >
+          </div>
+          <div class="col-12 col-sm-7 vc-text-container">
+            <h2 class="text-uppercase">VC's Corner</h2>
+            <b><small>Prof. Dr. Md. Didar-Ul-Alam</small></b>
+            <p class="text-justify text-secondary">It's a great pleasure to me to welcome you to Noakhali Science and Technology University(NSTU).This is the 27th public university which was established on 15th July 2001, and the academic activities start on 22th June 2006, having 13 teachers, 180 students with four departments...</p>
+            <button type="button" class="btn btn-dark">Read More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid-sm my-5">
+    <div class="row" style="width: 90%;margin: auto;">
+     <!-- =================== FREQUENTLY ASKED QUESTIONS =================== -->
+      <div class="col-12 col-md-5">
+        <h2 class="d-inline">FAQ<small>s</small> <i class="fa fa-question-circle"></i></h2>
+        <button class="view_all" type="button">View All</button>
+        <small class="text-secondary d-block mt-1">FREQUENTLY ASKED QUESTIONS</small>
+        <div class="accordion-container">
+          <details>
+            <summary>
+              Where is the NSTU Central Temple located?
+            </summary>
+            <div>
+              The central temple of  NSTU is located on the way to the Bibi Khadija Hall or Monoshoroni Uddyan.
+            </div>
+          </details>
+          <details >
+            <summary>
+             How many halls are in Nstu?
+            </summary>
+            <div>
+              NSTU have total 5 halls. Two boys hall, these are: 1.Basha Shahid Abdus Salam Hall, 2.Bir Muktijuddha Abdul Malek Ukil Hall. Three girls hall, these are: 1.Hazrat Bibi Khadiza Hall, 2.Jatir Pita Bangabandhu Sheikh Mujibur Rahman Hall, 3.Bangamata Sheikh Fazilatunnessa Mujib Hall","Applications for vacant seats will be accepted from the hall subject to availability of seats.
+            </div>
+          </details>
+          <details>
+            <summary>
+              when NSTU register office get open and close?
+            </summary>
+            <div>
+              (Office Hour: 9:00 AM to 5:00 PM, Days: Sunday to Thursday, Closed weekend day: Friday and Saturday)
+            </div>
+          </details>
+          <details>
+            <summary>
+              Tell me about some facilities provided by medical center
+            </summary>
+            <div>
+              The medical center of Noakhali science and technology university (NSTU) offers free experienced general practitioner and emergency medical care services to all members (students, teachers, officers, staff, also family members of the teachers, officers, staff) of the university community. The center provides service usually 8.30 am to 5.00 pm in working days but provide emergency services 24 hours. All members of the university get medicine from the medical center at free of cost .The center also has an ambulance, for 24 hours service.
+            </div>
+          </details>
+          <details>
+            <summary>
+              How many academic buildings are in NSTU?
+            </summary>
+            <div>
+              There are 2 established Academic Buildings, namely Academic Building-1 and Academic Building-2, in this University. One academic building is now under construction, the most significant academic building in Bangladesh.
+            </div>
+          </details>
+          <details>
+            <summary>
+              What is the name of the auditorium,NSTU
+            </summary>
+            <div>
+              In NSTU there is a five storied auditorium named “Bir Muktijuddha Haji Mohammad Idris Auditorim
+            </div>
+          </details>
+        </div> 
+      </div>
+      <!-- =================== IMAGE SLIDER =================== -->
+      <div class="col-12 col-md-7">
+        <h2>Photo Gallery <i class="fa-solid fa-image ml-1"></i></h2>
+        <div class="container">
+          <div class="mySlides">
+            <div class="numbertext">1 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_11.jpg')}}" style="width:100%">
+          </div>
+          <div class="mySlides">
+            <div class="numbertext">2 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_21.jpg')}}" style="width:100%">
+          </div>
+          <div class="mySlides">
+            <div class="numbertext">3 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_31.jpg')}}" style="width:100%">
+          </div>
+          <div class="mySlides">
+            <div class="numbertext">4 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_41.jpg')}}" style="width:100%">
+          </div>
+          <div class="mySlides">
+            <div class="numbertext">5 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_51.jpg')}}" style="width:100%">
+          </div>
+          <div class="mySlides">
+            <div class="numbertext">6 / 6</div>
+            <img src="{{ url_for('static',filename='./images/slide_61.jpg')}}" style="width:100%">
+          </div>
+            
+          <a class="prev" onclick="plusSlides(-1)">❮</a>
+          <a class="next" onclick="plusSlides(1)">❯</a>
+        
+          <div class="caption-container">
+            <p id="caption"></p>
+          </div>
+        
+          <div class="row" style="width: 105%;">
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_12.jpg')}}" style="width:100%" onclick="currentSlide(1)" alt="Fazilatunnesa Mujib Hall">
+            </div>
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_22.jpg')}}" style="width:100%" onclick="currentSlide(2)" alt="Nil Dighi">
+            </div>
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_32.jpg')}}" style="width:100%" onclick="currentSlide(3)" alt="Teachers Dormitory">
+            </div>
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_42.jpg')}}" style="width:100%" onclick="currentSlide(4)" alt="Shaheed Minar">
+            </div>
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_52.jpg')}}" style="width:100%" onclick="currentSlide(5)" alt="Night View Of Administrative Building">
+            </div>
+            <div class="column">
+              <img class="demo cursor" src="{{ url_for('static',filename='./images/slide_62.jpg')}}" style="width:100%" onclick="currentSlide(6)" alt="Administrative Building">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== CHATBOT BOX =================== -->
+  <div class="boxed">
+    <p class="title"> Share your Doubts with me to get a solution! <i class="close-icon fa fa-times"></i></p>
+      <div class="botTextContainer">
+        <p class="botText"><span><i class="fas fa-robot"></i>&nbsp;I'm NSTU ChatBot for your help!</span></p>
+        <!-- <button type="button" data-toggle="modal" data-target="#exampleModal" id="compare" class="mui-btn mui-btn--raised mui-btn--accent cmp">&nbsp; Compare Courses? &nbsp;</button> -->
+        <button type="button" data-toggle="modal" data-target="#exampleModal" id="compare">&nbsp; Compare Courses? &nbsp;</button>
+      </div>
+
+        <div id="chatbox">
+
+          <!-- =================== DISPLAYING LOGIN REGISTRATION LINK BASED ON USER LOGGED IN OR NOT =================== -->
+          {% with m=session.get("user_id")  %}
+            {% if m==None %}
+              <a href="./register" class="mt-3 btn btn-secondary">Registration</a>
+              <a href="./login" class="mt-3 btn btn-secondary">Log In</a>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        <!-- =================== DISPLAYING USER INPUT BOX BASED ON USER LOGGED IN OR NOT =================== -->
+        {% with m=session.get("user_id")  %}
+          {% if m!=None %}
+          <section class="msger">
+            <!-- <header class="msger-header">
+              <div class="msger-header-title">
+                <i class="fas fa-bug"></i> Chatbot <i class="fas fa-bug"></i>
+              </div>
+            </header> -->
+        
+            <main class="msger-chat">
+              <div class="msg left-msg">
+                <div class="msg-img" ></div>
+        
+                <div class="msg-bubble">
+                  <div class="msg-info">
+                    <div class="msg-info-name">Student Information Chatbot</div>
+                    <div class="msg-info-time">12.45</div>
+                  </div>
+        
+                  <div class="msg-text">
+                    Hi, welcome to ChatBot! Go ahead and send me a message. 😄
+                  </div>
+                </div>
+              </div>
+        
+            </main>
+        
+            <!-- =================== DISPLAYING USER INPUT BOX BASED ON USER LOGGED IN OR NOT =================== -->
+            <form>
+              <button class="mic_button" type="submit"><i id="microphone_icon" class="fas fa-microphone"></i></button>
+            </form>
+            <form class="msger-inputarea">
+              <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
+              <button type="submit" class="msger-send-btn">Send</button>
+            </form>
+          </section>
+        
+          {% endif %}
+        {% endwith %}
+
+
+  </div>
+
+  <!-- =================== FEEDBACK =================== -->
+  <div class="modal fade" id="NegfeedBackBox" tabindex="-1" role="dialog" aria-labelledby="feedBackLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title mx-auto">Your feedback will help us improve</h4>
+          <button  type="button" class="close close_feedback_box" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/user_feedback" id="feed_back_box" method="POST">
+            <div class="form-group">
+              <input type="text" class="form-control" name="feed_back_msg" placeholder="Enter Your Feedback">
+              <input type="hidden" name="feed_back_type" value="false" >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close_feedback_box" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="PosfeedBackBox" tabindex="-1" role="dialog" aria-labelledby="feedBackLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title mx-auto">Your feedback will help us improve</h4>
+          <button  type="button" class="close close_feedback_box" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/user_feedback" id="feed_back_box" method="POST">
+            <div class="form-group">
+              <input type="text" class="form-control" name="feed_back_msg" placeholder="Enter Your Feedback">
+              <input type="hidden" name="feed_back_type" value="true" >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close_feedback_box" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== MESSAGE BOT ICON =================== -->
+  <i id="message-bot" class="fa-regular fa-comments"></i>
+
+  <!-- =================== FOOTER =================== -->
+  <footer>
+    <div class="bg-dark py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-6 col-md-3">
+            <h4 class="foot-title">Useful Link</h4>
+            <ul>
+              <li><a href="http://www.ugc.gov.bd/en" class="text-white">UGC</a></li>
+              <li><a href="http://www.moedu.gov.bd/" class="text-white">Ministry of Education</a></li>
+              <li><a href="http://www.bangabhaban.gov.bd/" class="text-white">Office of Chancellor</a></li>
+              <li><a href="http://www.pmo.gov.bd/" class="text-white">Office of Prime Minister</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3">
+            <h4 class="foot-title">Faculties</h4>
+            <ul>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Engineering</a></li>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Science</a></li>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Social Science and Humanities</a></li>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Business Administration</a></li>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Law</a></li>
+              <li><a href="https://nstu.edu.bd/faculties.html" class="text-white">Faculty of Education Sciences</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3">
+            <h4 class="foot-title">Institutes</h4>
+            <ul>
+              <li><a href="https://nstu.edu.bd/institutes.html" class="text-white">Institute of Information Sciences (IIS)</a></li>
+              <li><a href="https://nstu.edu.bd/institutes.html" class="text-white">Institute of Information Technology (IIT)</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3">
+            <h4 class="foot-title">Centers</h4>
+            <ul>
+              <li><a href="https://nstu.edu.bd/cyber_center.html" class="text-white">Cyber Center</a></li>
+              <li><a href="https://nstu.edu.bd/medical_center.html" class="text-white">Medical Center</a></li>
+              <li><a href="https://nstu.edu.bd/research_cell.html" class="text-white">Research Center</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-white m-0">All &copy copy right reserved | <a href="" class="text-white">Noakhali Science & Technology University</a></p>
+  </footer>
+  
+  <!-- =================== BOOTSTRAP JAVASCRIPT =================== -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>  
+  <!-- =================== CUSTOM JAVASCRIPT =================== -->
+  <script src="{{ url_for('static',filename='./index.js') }}"></script>
+  <script src="{{ url_for('static',filename='./compare.js') }}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script>
+
+    const msgerForm = get(".msger-inputarea");
+    const msgerInput = get(".msger-input");
+    const msgerChat = get(".msger-chat");
+
+
+    // Icons made by Freepik from www.flaticon.com
+    const BOT_IMG = "{{ url_for('static',filename='./images/bot.png') }}";
+    const PERSON_IMG = "{{ url_for('static',filename='./images/avatar.png') }}";
+    const BOT_NAME = "Student Information Chatbot";
+    const PERSON_NAME = "You";
+
+    function appendBotMessage(name, img, side, text) {
+      //   Simple solution for small apps
+      const msgHTML = `
+        <div class="msg ${side}-msg">
+          <div class="msg-img" style="background-image: url(${img})"></div>
+
+          <div class="msg-bubble">
+            <div class="msg-info">
+              <div class="msg-info-name">${name}</div>
+              <div class="msg-info-time">${formatDate(new Date())}</div>
+            </div>
+
+            <div class="msg-text">${text}</div>
+            <div class="feed_back_button">
+                <button type="submit" class="like_button"><i class="fa-solid fa-thumbs-up" data-toggle="modal" data-target="#PosfeedBackBox"></i></button>
+                <button type="submit" class="dislike_button"><i class="fa-solid fa-thumbs-down" data-toggle="modal" data-target="#NegfeedBackBox"></i></button>
+            </div>
+
+          </div>
+        </div>`;
+      msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+      msgerChat.scrollTop += 500;
+    }
+
+    function appendUserMessage(name, img, side, text) {
+      //   Simple solution for small apps
+      const msgHTML = `
+        <div class="msg ${side}-msg">
+          <div class="msg-img" style="background-image: url(${img})"></div>
+
+          <div class="msg-bubble">
+            <div class="msg-info">
+              <div class="msg-info-name">${name}</div>
+              <div class="msg-info-time">${formatDate(new Date())}</div>
+            </div>
+
+            <div class="msg-text">${text}</div>
+          </div>
+        </div>`;
+
+      msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+      msgerChat.scrollTop += 500;
+    }
+
+    msgerForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const msgText = msgerInput.value;
+      if (!msgText) return;
+
+      appendUserMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+      msgerInput.value = "";
+      botResponse(msgText);
+    });
+
+    function botResponse(rawText) {
+      $.get("/get", { msg: rawText }).done(function (data) {
+        const msgText = data;
+        console.log(msgText)
+        appendBotMessage(BOT_NAME, BOT_IMG, "left", msgText);
+
+      });
+
+    }
+
+    const feed_back_box=document.getElementById("feed_back_box");
+    feed_back_box.addEventListener("submit",(e)=>{
+      e.preventDefault();
+      const feed_back_msg=document.getElementsByName("feed_back_msg")[0].value;
+      const feed_back_type=document.getElementsByName("feed_back_type")[0].value;
+      console.log(feed_back_msg)
+      console.log(feed_back_type)
+      $.post('/user_feedback',{feed_back_msg:feed_back_msg,feed_back_type:feed_back_type})
+      document.getElementsByClassName("close_feedback_box")[0].click()
+    })
+
+
+  
+    // Utils
+    function get(selector, root = document) {
+      return root.querySelector(selector);
+    }
+
+    function formatDate(date) {
+      const h = "0" + date.getHours();
+      const m = "0" + date.getMinutes();
+
+      return `${h.slice(-2)}:${m.slice(-2)}`;
+    }
+    
+    /* =================== HANDLING USER FEEDBACK TYPE =================== */
+
+
+    const mic_button=document.getElementsByClassName("mic_button")[0]
+    const recognition = new window.webkitSpeechRecognition();
+    const microphone_icon=document.getElementById("microphone_icon");
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    let isListening = false;
+    let audioChunks = [];
+
+    mic_button.addEventListener("click",(e)=>{
+      e.preventDefault();
+      if(!isListening){
+        isListening=true;
+        recognition.start();
+        mic_button.style.backgroundColor = '#0030ca';
+        microphone_icon.style.color="white";
+      }else{
+        isListening=false;
+        recognition.stop();
+        mic_button.style.backgroundColor = '';
+        microphone_icon.style.color="";
+      }
+    })
+
+    recognition.onresult = function(event) {
+      const lastResultIndex = event.results.length - 1;
+      const lastResult = event.results[lastResultIndex];
+      const transcript = lastResult[0].transcript;
+      console.log(transcript);
+      // Send the transcript to the Flask app via AJAX
+    };
+
+    recognition.onend = function() {
+      isRecording = false;
+      mic_button.style.backgroundColor = '';
+    };
+
+  </script>
+
+</body>
+</html>
